@@ -127,9 +127,10 @@ export async function addBook(data) {
     }],
     averageRating: parseInt(data.rating, 10),
   };
+
   const bodyFormData = new FormData();
   bodyFormData.append('book', JSON.stringify(book));
-  bodyFormData.append('image', data.file[0]);
+  bodyFormData.append('image', data.file[0]); // ✅ ici !
 
   try {
     return await axios({
@@ -138,6 +139,7 @@ export async function addBook(data) {
       data: bodyFormData,
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
+        // Pas besoin de forcer 'Content-Type': multipart/form-data, axios le gère automatiquement avec FormData
       },
     });
   } catch (err) {

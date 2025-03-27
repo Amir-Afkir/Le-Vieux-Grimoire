@@ -9,12 +9,12 @@ import addFileIMG from '../../../images/add_file.png';
 import styles from './BookForm.module.css';
 import { updateBook, addBook } from '../../../lib/common';
 
-function BookForm({ book, validate }) {
+// ⬇️ Valeurs par défaut directement dans les paramètres
+function BookForm({ book = null, validate = null }) {
   const userRating = book ? book.ratings.find((elt) => elt.userId === localStorage.getItem('userId'))?.grade : 0;
-
   const [rating, setRating] = useState(0);
-
   const navigate = useNavigate();
+
   const {
     register, watch, formState, handleSubmit, reset,
   } = useForm({
@@ -25,9 +25,11 @@ function BookForm({ book, validate }) {
       genre: book?.genre,
     }), [book]),
   });
+
   useEffect(() => {
     reset(book);
-  }, [book]);
+  }, [book, reset]);
+
   const file = watch(['file']);
   const [filePreview] = useFilePreview(file);
 
@@ -41,22 +43,19 @@ function BookForm({ book, validate }) {
       setRating(parseInt(rate, 10));
       formState.dirtyFields.rating = false;
     }
-  }, [formState]);
+  }, [formState, book]);
 
   const onSubmit = async (data) => {
-    // When we create a new book
     if (!book) {
       if (!data.file[0]) {
         alert('Vous devez ajouter une image');
       }
       if (!data.rating) {
-        /* eslint-disable no-param-reassign */
         data.rating = 0;
-        /* eslint-enable no-param-reassign */
       }
       const newBook = await addBook(data);
       if (!newBook.error) {
-        validate(true);
+        validate?.(true);
       } else {
         alert(newBook.message);
       }
@@ -110,7 +109,6 @@ function BookForm({ book, validate }) {
               <p>Ajouter une image</p>
             </>
           )}
-
         </div>
         <input {...register('file')} type="file" id="file" />
       </label>
@@ -138,8 +136,4 @@ BookForm.propTypes = {
   validate: PropTypes.func,
 };
 
-BookForm.defaultProps = {
-  book: null,
-  validate: null,
-};
 export default BookForm;

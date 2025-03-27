@@ -63,8 +63,16 @@ function SignIn({ setUser }) {
         return;
       }
       setNotification({ error: false, message: 'Votre compte a bien été créé, vous pouvez vous connecter' });
+      
     } catch (err) {
-      setNotification({ error: true, message: err.message });
+      const message = err.response?.data?.message || 'Une erreur est survenue lors de l’inscription.';
+      setNotification({ error: true, message });
+    
+      // Log uniquement les erreurs inconnues
+      if (!err.response?.data?.message) {
+        console.log('Erreur inconnue pendant l’inscription :', err);
+      } 
+
       console.log('Some error occured during signing up: ', err);
     } finally {
       setIsLoading(false);
