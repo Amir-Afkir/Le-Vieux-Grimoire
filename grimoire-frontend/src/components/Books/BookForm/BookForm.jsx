@@ -46,28 +46,52 @@ function BookForm({ book = null, validate = null }) {
   }, [formState, book]);
 
   const onSubmit = async (data) => {
-    if (!book) {
-      if (!data.file[0]) {
-        alert('Vous devez ajouter une image');
-      }
-      if (!data.rating) {
-        data.rating = 0;
-      }
+  if (isNaN(data.year) || data.year.trim() === "") {
+    alert("L'année de publication doit être un nombre.");
+    return;
+  }
+
+  if (!book) {
+    if (!data.file[0]) {
+      alert('Vous devez ajouter une image');
+      return;
+    }
+    if (!data.rating) {
+      data.rating = 0;
+    }
+
+    const userId = localStorage.getItem('userId');
+    const initialRating = {
+      userId: userId,
+      grade: parseInt(data.rating, 10) || 0,
+    };
+    data.ratings = [initialRating];
+    data.averageRating = initialRating.grade;
+
+    try {
       const newBook = await addBook(data);
       if (!newBook.error) {
-        validate?.(true);
+        validate(true);
       } else {
         alert(newBook.message);
       }
-    } else {
+    } catch (error) {
+      alert('Une erreur est survenue lors de l\'ajout du livre.');
+    }
+  } else {
+    try {
       const updatedBook = await updateBook(data, data.id);
       if (!updatedBook.error) {
         navigate('/');
       } else {
         alert(updatedBook.message);
       }
+    } catch (error) {
+      alert('Une erreur est survenue lors de la mise à jour du livre.');
     }
-  };
+  }
+};
+
 
   const readOnlyStars = !!book;
   return (

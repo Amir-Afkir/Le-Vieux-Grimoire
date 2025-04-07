@@ -1,10 +1,13 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+#==============================
+#Base
+#==============================
 
 # dependencies
 /node_modules
 /.pnp
 .pnp.js
 /.idea
+
 # testing
 /coverage
 
@@ -13,6 +16,7 @@
 
 # misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
@@ -21,3 +25,30 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Logs
+*.log
+
+#==============================
+#Backend
+#==============================
+
+# Ignorer le dossier node_modules du backend
+grimoire-backend/node_modules/
+
+# Ignorer le dossier images
+grimoire-backend/images/
+
+# Ignorer les fichiers d'environnement
+grimoire-backend/.env
+
+# Fichiers générés par le système
+grimoire-backend/.DS_Store
+grimoire-backend/Thumbs.db
+
+#==============================
+#Frontend
+#==============================
+
+# Ignorer le dossier node_modules du frontend
+grimoire-frontend/node_modules/
